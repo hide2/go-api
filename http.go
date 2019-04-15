@@ -1,14 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/valyala/fasthttp"
 )
 
-
 func main() {
 	app := App()
 	c := Redis("localhost:6379")
+	db, _ := MySQL("test:test@/test")
 
 	app.Use("/ping", func(ctx *fasthttp.RequestCtx, next func(error)) {
 		pong, _ := c.Ping().Result()
@@ -19,6 +20,28 @@ func main() {
 		c.Set("key", "123456", 0)
 		val, _ := c.Get("key").Result()
 		ctx.SetBody([]byte(val))
+	})
+
+	app.Use("/db", func(ctx *fasthttp.RequestCtx, next func(error)) {
+		rows, err := db.Query("select * from users")
+		if err != nil {
+			panic(err)
+		}
+		users := make(map[int]string)
+		for rows.Next() {
+			var uid int
+			var username string
+			err = rows.Scan(&uid, &username)
+			if err != nil {
+				panic(err)
+			}
+			users[uid] = username
+		}
+		data, err := json.Marshal(users)
+		if err != nil {
+			panic(err)
+		}
+		ctx.SetBody([]byte(data))
 	})
 
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
