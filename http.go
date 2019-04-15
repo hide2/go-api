@@ -30,6 +30,6 @@ func main() {
 		Concurrency: 1024 * 1024,
 	}
 
-	fmt.Println("API started at :9798")
+	fmt.Println("Server started at :9798")
 	server.ListenAndServe(":9798")
 }
