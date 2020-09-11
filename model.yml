@@ -1,0 +1,8 @@
+models:
+  - model: User
+    name: string
+    created_at: time.Time
+
+  - model: Event
+    name: string
+    created_at: time.Time
