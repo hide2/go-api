@@ -1,8 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	r "go-api/fasthttp-routing"
+	r "go-api/routing"
 
 	"github.com/valyala/fasthttp"
 )
@@ -13,6 +14,11 @@ func main() {
 	// List Users
 	router.Get("/users", func(c *r.Context) error {
 		fmt.Printf("List Users %v\n", c.Param("id"))
+		j, err := json.Marshal(c.Params)
+		if err != nil {
+			return err
+		}
+		c.Write(j)
 		return nil
 	})
 
@@ -22,6 +28,11 @@ func main() {
 		fmt.Printf("Create New User - Header %s\n", c.Request.Header.Peek("Content-Type"))
 		fmt.Printf("Create New User - Path %s\n", c.Path())
 		fmt.Printf("Create New User - Params %v\n", c.Params)
+		j, err := json.Marshal(c.Params)
+		if err != nil {
+			return err
+		}
+		c.Write(j)
 		return nil
 	})
 

@@ -123,6 +123,7 @@ func (c *Context) init(ctx *fasthttp.RequestCtx) {
 	if "application/json" == string(c.Request.Header.Peek("Content-Type")) {
 		json.Unmarshal(c.PostBody(), &c.Params)
 	}
+	c.SetContentType("application/json")
 }
 
 // Serialize converts the given data into a byte array.
