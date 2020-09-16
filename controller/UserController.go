@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	. "go-api/model"
 	r "go-api/routing"
 )
 
@@ -12,8 +13,22 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 
 	// List Users
 	App.Get("/users", func(c *r.Context) error {
-		fmt.Printf("List Users %v\n", c.Params["page"])
-		c.JSON(c.Params)
+		size := 20
+		p := 1
+		if c.Params["page"] != nil {
+			p = c.Params["page"].(int)
+		}
+		fmt.Printf("List Users %v %v\n", p, size)
+		us, _ := User.Page(p, size).All()
+		js := make([]map[string]interface{}, 0)
+		for _, u := range us {
+			j := make(map[string]interface{})
+			j["id"] = u.ID
+			j["name"] = u.Name
+			j["created_at"] = u.CreatedAt
+			js = append(js, j)
+		}
+		c.JSON(js)
 		return nil
 	})
 
