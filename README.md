@@ -70,7 +70,7 @@ Generate Model & Router & Controller go files
 go run gen.go
 ```
 Start Server with go run server.go
-```
+``` go
 package main
 
 import (
@@ -95,6 +95,6 @@ func main() {
 ```
 
 BenchMark
-```
+``` bash
 ab -n 1000000 -c 10000 -k http://127.0.0.1:8080/
 ```
