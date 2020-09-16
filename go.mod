@@ -3,6 +3,7 @@ module go-api
 go 1.15
 
 require (
+	github.com/fasthttp/router v1.3.2
 	github.com/go-ozzo/ozzo-routing v2.1.4+incompatible
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
