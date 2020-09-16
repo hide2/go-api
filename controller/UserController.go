@@ -5,7 +5,11 @@ import (
 	r "go-api/routing"
 )
 
-func InitUserController(App *r.Router) {
+type UserControllerStruct struct {
+}
+
+func (c *UserControllerStruct) Register(App *r.Router) {
+
 	// List Users
 	App.Get("/users", func(c *r.Context) error {
 		fmt.Printf("List Users %v\n", c.Params["page"])
@@ -40,4 +44,8 @@ func InitUserController(App *r.Router) {
 		c.JSON(c.NamedParams)
 		return nil
 	})
+
+	fmt.Println("UserController Registered.")
 }
+
+var UserController = &UserControllerStruct{}

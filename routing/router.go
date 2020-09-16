@@ -69,6 +69,15 @@ func New() *Router {
 	return r
 }
 
+type IController interface {
+	Register(r *Router)
+}
+
+// Register routes
+func (r *Router) Register(c IController) {
+	c.Register(r)
+}
+
 // HandleRequest handles the HTTP request.
 func (r *Router) HandleRequest(ctx *fasthttp.RequestCtx) {
 	c := r.pool.Get().(*Context)
