@@ -1,10 +1,11 @@
 Go-API is a micro API service framework, auto-generate RESTful API based on model yml
 
 # Go-API Features
-- Restful API generator
+- Restful JSON API generator
 - Auto support for application/x-www-form-urlencoded & application/json
 - NamedParams & Params(Query Args/POST Body)
 - Routing & Filter & Auth
+- Access Log
 - MySQL ORM & Redis Support
 - Auto create table
 - Model & CRUD methods generator

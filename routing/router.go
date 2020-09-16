@@ -6,10 +6,12 @@
 package routing
 
 import (
+	"fmt"
 	"net/http"
 	"sort"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/valyala/fasthttp"
 )
@@ -74,6 +76,8 @@ func (r *Router) HandleRequest(ctx *fasthttp.RequestCtx) {
 	c.handlers, c.pnames = r.find(string(ctx.Method()), string(ctx.Path()), c.pvalues)
 	// init NamedParams
 	c.NamedParams = make(map[string]interface{})
+	// Access Log
+	fmt.Printf("[%s] %s %s %v %s\n", time.Now().Format("2006-01-02 15:04:05"), c.Method(), c.RequestURI(), c.Params, c.RemoteAddr())
 	for i, n := range c.pnames {
 		c.NamedParams[n] = c.pvalues[i]
 	}
