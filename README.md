@@ -96,5 +96,5 @@ func main() {
 
 BenchMark
 ``` bash
-ab -n 1000000 -c 10000 -k http://127.0.0.1:8080/
+ab -n 1000000 -c 100 -k http://127.0.0.1:8080/users
 ```
