@@ -110,9 +110,9 @@ func main() {
 ```
 Test your API
 ``` bash
-curl http://localhost:8080/users?page=1
-curl http://localhost:8080/users/1
-curl http://localhost:8080/users -X POST -d '{"name": "John"}' -H "Content-Type: application/json"
+curl -H "Content-Type: application/json" -X POST http://localhost:8080/users -d '{"name": "John"}'
+curl -H "Content-Type: application/json" -X GET http://localhost:8080/users?page=1
+curl -H "Content-Type: application/json" -X GET http://localhost:8080/users/1
 ```
 BenchMark
 ``` bash
