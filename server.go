@@ -5,6 +5,7 @@ import (
 	"time"
 
 	. "go-api/controller"
+	. "go-api/model"
 	r "go-api/routing"
 
 	"github.com/valyala/fasthttp"
@@ -12,8 +13,14 @@ import (
 
 func main() {
 
-	// User.CreateTable()
-	// Event.CreateTable()
+	User.Exec("DROP TABLE IF EXISTS user")
+	Event.Exec("DROP TABLE IF EXISTS event")
+	User.CreateTable()
+	Event.CreateTable()
+	for i := 0; i < 30; i++ {
+		props := map[string]interface{}{"name": "Calvin"}
+		User.Create(props)
+	}
 
 	var App = r.New()
 	App.Register(UserController)

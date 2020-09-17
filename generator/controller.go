@@ -40,9 +40,9 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 		ujs := make([]map[string]interface{}, 0)
 		for _, v := range us {
 			u := make(map[string]interface{})
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
+			{{- range $i, $k := .Keys }}
+			u["{{$k}}"] = v.{{index $.Attrs $i}}
+			{{- end }}
 			ujs = append(ujs, u)
 		}
 		j, _ := ResponseJSON(ujs)
