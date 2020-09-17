@@ -43,7 +43,16 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 
 	// Get Event
 	App.Get("/events/<id>", func(c *r.Context) error {
-		c.JSON(c.NamedParams)
+		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
+		u, _ := Event.Find(int64(id))
+		ujs := make(map[string]interface{})
+		if u != nil {
+			ujs["id"] = u.ID
+			ujs["name"] = u.Name
+			ujs["created_at"] = u.CreatedAt
+		}
+		j, _ := ResponseJSON(ujs)
+		c.Write(j)
 		return nil
 	})
 
