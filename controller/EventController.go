@@ -85,7 +85,11 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 
 	// Delete Event
 	App.Delete("/events/<id>", func(c *r.Context) error {
-		c.JSON(c.NamedParams)
+		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
+		Event.Destroy(int64(id))
+		u := make(map[string]interface{})
+		j, _ := ResponseJSON(u)
+		c.Write(j)
 		return nil
 	})
 

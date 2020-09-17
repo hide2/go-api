@@ -85,7 +85,11 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 
 	// Delete User
 	App.Delete("/users/<id>", func(c *r.Context) error {
-		c.JSON(c.NamedParams)
+		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
+		User.Destroy(int64(id))
+		u := make(map[string]interface{})
+		j, _ := ResponseJSON(u)
+		c.Write(j)
 		return nil
 	})
 

@@ -100,7 +100,11 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 
 	// Delete {{.Model}}
 	App.Delete("/{{.Paths}}/<id>", func(c *r.Context) error {
-		c.JSON(c.NamedParams)
+		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
+		{{.Model}}.Destroy(int64(id))
+		u := make(map[string]interface{})
+		j, _ := ResponseJSON(u)
+		c.Write(j)
 		return nil
 	})
 
