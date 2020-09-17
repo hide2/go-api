@@ -113,6 +113,7 @@ Test your API
 curl -H "Content-Type: application/json" -X POST http://localhost:8080/users -d '{"name": "John"}'
 curl -H "Content-Type: application/json" -X GET http://localhost:8080/users?page=1
 curl -H "Content-Type: application/json" -X GET http://localhost:8080/users/1
+curl -H "Content-Type: application/json" -X PUT http://localhost:8080/users/1 -d '{"name": "John"}'
 ```
 BenchMark
 ``` bash

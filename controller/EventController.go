@@ -67,7 +67,19 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 
 	// Update Event
 	App.Put("/events/<id>", func(c *r.Context) error {
-		c.JSON(c.NamedParams)
+		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
+		props := c.Params
+		conds := map[string]interface{}{"id": int64(id)}
+		Event.Update(props, conds)
+		v, _ := Event.Find(int64(id))
+		u := make(map[string]interface{})
+		if v != nil {
+			u["id"] = v.ID
+			u["name"] = v.Name
+			u["created_at"] = v.CreatedAt
+		}
+		j, _ := ResponseJSON(u)
+		c.Write(j)
 		return nil
 	})
 

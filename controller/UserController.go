@@ -67,7 +67,19 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 
 	// Update User
 	App.Put("/users/<id>", func(c *r.Context) error {
-		c.JSON(c.NamedParams)
+		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
+		props := c.Params
+		conds := map[string]interface{}{"id": int64(id)}
+		User.Update(props, conds)
+		v, _ := User.Find(int64(id))
+		u := make(map[string]interface{})
+		if v != nil {
+			u["id"] = v.ID
+			u["name"] = v.Name
+			u["created_at"] = v.CreatedAt
+		}
+		j, _ := ResponseJSON(u)
+		c.Write(j)
 		return nil
 	})
 
