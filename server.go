@@ -12,6 +12,9 @@ import (
 
 func main() {
 
+	// User.CreateTable()
+	// Event.CreateTable()
+
 	var App = r.New()
 	App.Register(UserController)
 	App.Register(EventController)

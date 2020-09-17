@@ -498,7 +498,7 @@ func GenModel() {
 				} else if c == "int64" {
 					c = "BIGINT"
 				} else if c == "time.Time" {
-					c = "DATETIME"
+					c = "DATETIME DEFAULT CURRENT_TIMESTAMP"
 					// imports = append(imports, "time")
 				}
 				columns = append(columns, c)

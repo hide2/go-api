@@ -52,7 +52,16 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 
 	// Create New {{.Model}}
 	App.Post("/{{.Paths}}", func(c *r.Context) error {
-		c.JSON(c.Params)
+		props := c.Params
+		u, _ := {{.Model}}.Create(props)
+		ujs := make(map[string]interface{})
+		if u != nil {
+			ujs["id"] = u.ID
+			ujs["name"] = u.Name
+			ujs["created_at"] = u.CreatedAt
+		}
+		j, _ := ResponseJSON(ujs)
+		c.Write(j)
 		return nil
 	})
 

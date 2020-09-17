@@ -37,7 +37,16 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 
 	// Create New User
 	App.Post("/users", func(c *r.Context) error {
-		c.JSON(c.Params)
+		props := c.Params
+		u, _ := User.Create(props)
+		ujs := make(map[string]interface{})
+		if u != nil {
+			ujs["id"] = u.ID
+			ujs["name"] = u.Name
+			ujs["created_at"] = u.CreatedAt
+		}
+		j, _ := ResponseJSON(ujs)
+		c.Write(j)
 		return nil
 	})
 
