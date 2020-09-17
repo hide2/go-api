@@ -1,3 +1,4 @@
+
 package controller
 
 import (
@@ -31,6 +32,30 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 		}
 		j, _ := ResponseJSON(ujs)
 		c.Write(j)
+		return nil
+	})
+
+	// Create New Event
+	App.Post("/events", func(c *r.Context) error {
+		c.JSON(c.Params)
+		return nil
+	})
+
+	// Get Event
+	App.Get("/events/<id>", func(c *r.Context) error {
+		c.JSON(c.NamedParams)
+		return nil
+	})
+
+	// Update Event
+	App.Put("/events/<id>", func(c *r.Context) error {
+		c.JSON(c.NamedParams)
+		return nil
+	})
+
+	// Delete Event
+	App.Delete("/events/<id>", func(c *r.Context) error {
+		c.JSON(c.NamedParams)
 		return nil
 	})
 

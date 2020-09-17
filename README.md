@@ -67,8 +67,13 @@ models:
 ```
 Generate Model & Router & Controller go files
 ``` bash
-go run gen.go
+> go run gen.go
+> -- Generate model/User.go
+> -- Generate model/Event.go
+> -- Generate controller/UserController.go
+> -- Generate controller/EventController.go
 ```
+Which will generate Mo
 Start Server with go run server.go
 ``` go
 package main
@@ -92,6 +97,7 @@ func main() {
 	fmt.Printf("[%s] ===== Server Started at 8080.\n", time.Now().Format("2006-01-02 15:04:05"))
 	panic(fasthttp.ListenAndServe(":8080", App.HandleRequest))
 }
+
 ```
 
 BenchMark

@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	. "go-api/lib"
 	"io/ioutil"
 	"os"
 	"strings"
 	"text/template"
-
-	. "go-api/lib"
 
 	"gopkg.in/yaml.v2"
 )

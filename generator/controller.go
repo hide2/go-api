@@ -1,13 +1,14 @@
 package generator
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	. "go-api/lib"
 	"io/ioutil"
 	"os"
+	"strings"
 	"text/template"
-
-	// . "go-api/lib"
 
 	"gopkg.in/yaml.v2"
 )
@@ -17,10 +18,74 @@ package controller
 
 import (
 	"fmt"
-	"github.com/fasthttp/router"
-	"github.com/valyala/fasthttp"
+	. "go-api/model"
+	r "go-api/routing"
+	"strconv"
 )
+
+type {{.Model}}ControllerStruct struct {
+}
+
+func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
+	// List {{.Model}}s
+	App.Get("/{{.Paths}}", func(c *r.Context) error {
+		page, size := 1, 20
+		if c.Params["page"] != nil {
+			page, _ = strconv.Atoi(c.Params["page"].(string))
+		}
+		if c.Params["size"] != nil {
+			size, _ = strconv.Atoi(c.Params["size"].(string))
+		}
+		us, _ := {{.Model}}.Page(page, size).All()
+		ujs := make([]map[string]interface{}, 0)
+		for _, v := range us {
+			u := make(map[string]interface{})
+			u["id"] = v.ID
+			u["name"] = v.Name
+			u["created_at"] = v.CreatedAt
+			ujs = append(ujs, u)
+		}
+		j, _ := ResponseJSON(ujs)
+		c.Write(j)
+		return nil
+	})
+
+	// Create New {{.Model}}
+	App.Post("/{{.Paths}}", func(c *r.Context) error {
+		c.JSON(c.Params)
+		return nil
+	})
+
+	// Get {{.Model}}
+	App.Get("/{{.Paths}}/<id>", func(c *r.Context) error {
+		c.JSON(c.NamedParams)
+		return nil
+	})
+
+	// Update {{.Model}}
+	App.Put("/{{.Paths}}/<id>", func(c *r.Context) error {
+		c.JSON(c.NamedParams)
+		return nil
+	})
+
+	// Delete {{.Model}}
+	App.Delete("/{{.Paths}}/<id>", func(c *r.Context) error {
+		c.JSON(c.NamedParams)
+		return nil
+	})
+
+	fmt.Println("{{.Model}}Controller Registered.")
+}
+
+var {{.Model}}Controller = &{{.Model}}ControllerStruct{}
 `
+
+type ControllerTemplateAttr struct {
+	Model string
+	Paths string
+	Attrs []string
+	Keys  []string
+}
 
 func GenController() {
 	flag.Parse()
@@ -35,30 +100,18 @@ func GenController() {
 		fmt.Println("error:", merr)
 	}
 	for _, j := range ms["models"] {
-		var modelname, filename string
-		// imports := make([]string, 0)
-		// attrs := make([]string, 0)
-		// keys := make([]string, 0)
-		// values := make([]string, 0)
-		// columns := make([]string, 0)
-		// imports = append(imports, "fmt")
+		var modelname, paths, filename string
+		attrs := make([]string, 0)
+		keys := make([]string, 0)
+		attrs = append(attrs, "ID")
+		keys = append(keys, "id")
 		for _, v := range j {
 			if v.Key != "model" {
-				// attrs = append(attrs, Camelize(v.Key.(string)))
-				// keys = append(keys, v.Key.(string))
-				// values = append(values, v.Value.(string))
-				// c := v.Value.(string)
-				// if c == "string" {
-				// 	c = "VARCHAR(255)"
-				// } else if c == "int64" {
-				// 	c = "BIGINT"
-				// } else if c == "time.Time" {
-				// 	c = "DATETIME"
-				// 	// imports = append(imports, "time")
-				// }
-				// columns = append(columns, c)
+				attrs = append(attrs, Camelize(v.Key.(string)))
+				keys = append(keys, v.Key.(string))
 			} else {
 				modelname = v.Value.(string)
+				paths = strings.ToLower(modelname) + "s"
 				filename = "controller/" + modelname + "Controller.go"
 			}
 		}
@@ -68,23 +121,10 @@ func GenController() {
 			fmt.Println(err)
 			return
 		}
-		// cstr := strings.Join(keys, ",")
-		// phs := make([]string, 0)
-		// iargs := make([]string, 0)
-		// scans := make([]string, 0)
-		// scans = append(scans, "&m.ID")
-		// for i := 0; i < len(attrs); i++ {
-		// 	phs = append(phs, "?")
-		// 	iargs = append(iargs, "m."+attrs[i])
-		// 	scans = append(scans, "&m."+attrs[i])
-		// }
-		// ph := strings.Join(phs, ",")
-		// iarg := strings.Join(iargs, ", ")
-		// scanstr := strings.Join(scans, ", ")
-		// isql := fmt.Sprintf("INSERT INTO %s(%s) VALUES(%s)", table, cstr, ph)
-		// m := ModelAttr{modelname, table, imports, attrs, keys, values, columns, isql, iarg, scanstr}
-		// var b bytes.Buffer
-		// t.Execute(&b, m)
+
+		m := ControllerTemplateAttr{modelname, paths, attrs, keys}
+		var b bytes.Buffer
+		t.Execute(&b, m)
 		// fmt.Println(b.String())
 
 		// Write to file
@@ -93,7 +133,7 @@ func GenController() {
 			fmt.Println("create file: ", err)
 			return
 		}
-		err = t.Execute(f, nil)
+		err = t.Execute(f, m)
 		if err != nil {
 			fmt.Print("execute: ", err)
 			return
