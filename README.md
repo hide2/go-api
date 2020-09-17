@@ -73,7 +73,6 @@ Generate Model & Router & Controller go files
 > -- Generate controller/UserController.go
 > -- Generate controller/EventController.go
 ```
-Which will generate Mo
 Start Server with go run server.go
 ``` go
 package main
@@ -97,9 +96,12 @@ func main() {
 	fmt.Printf("[%s] ===== Server Started at 8080.\n", time.Now().Format("2006-01-02 15:04:05"))
 	panic(fasthttp.ListenAndServe(":8080", App.HandleRequest))
 }
-
 ```
-
+Test your API
+``` bash
+curl http://localhost:8080/users?page=1
+curl http://localhost:8080/users/1
+```
 BenchMark
 ``` bash
 ab -n 100000 -c 100 -k http://127.0.0.1:8080/users
