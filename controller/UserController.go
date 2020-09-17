@@ -1,4 +1,3 @@
-
 package controller
 
 import (
@@ -43,7 +42,16 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 
 	// Get User
 	App.Get("/users/<id>", func(c *r.Context) error {
-		c.JSON(c.NamedParams)
+		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
+		u, _ := User.Find(int64(id))
+		ujs := make(map[string]interface{})
+		if u != nil {
+			ujs["id"] = u.ID
+			ujs["name"] = u.Name
+			ujs["created_at"] = u.CreatedAt
+		}
+		j, _ := ResponseJSON(ujs)
+		c.Write(j)
 		return nil
 	})
 
