@@ -4,6 +4,7 @@ import (
 	"fmt"
 	. "go-api/model"
 	r "go-api/routing"
+	"strconv"
 )
 
 type UserControllerStruct struct {
@@ -13,22 +14,24 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 
 	// List Users
 	App.Get("/users", func(c *r.Context) error {
-		size := 20
-		p := 1
+		page, size := 1, 20
 		if c.Params["page"] != nil {
-			p = c.Params["page"].(int)
+			page, _ = strconv.Atoi(c.Params["page"].(string))
 		}
-		fmt.Printf("List Users %v %v\n", p, size)
-		us, _ := User.Page(p, size).All()
-		js := make([]map[string]interface{}, 0)
-		for _, u := range us {
-			j := make(map[string]interface{})
-			j["id"] = u.ID
-			j["name"] = u.Name
-			j["created_at"] = u.CreatedAt
-			js = append(js, j)
+		if c.Params["size"] != nil {
+			size, _ = strconv.Atoi(c.Params["size"].(string))
 		}
-		c.JSON(js)
+		us, _ := User.Page(page, size).All()
+		ujs := make([]map[string]interface{}, 0)
+		for _, v := range us {
+			u := make(map[string]interface{})
+			u["id"] = v.ID
+			u["name"] = v.Name
+			u["created_at"] = v.CreatedAt
+			ujs = append(ujs, u)
+		}
+		j, _ := ResponseJSON(ujs)
+		c.Write(j)
 		return nil
 	})
 
