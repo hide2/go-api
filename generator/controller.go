@@ -53,14 +53,14 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 	// Create New {{.Model}}
 	App.Post("/{{.Paths}}", func(c *r.Context) error {
 		props := c.Params
-		u, _ := {{.Model}}.Create(props)
-		ujs := make(map[string]interface{})
-		if u != nil {
-			ujs["id"] = u.ID
-			ujs["name"] = u.Name
-			ujs["created_at"] = u.CreatedAt
+		v, _ := {{.Model}}.Create(props)
+		u := make(map[string]interface{})
+		if v != nil {
+			{{- range $i, $k := .Keys }}
+			u["{{$k}}"] = v.{{index $.Attrs $i}}
+			{{- end }}
 		}
-		j, _ := ResponseJSON(ujs)
+		j, _ := ResponseJSON(u)
 		c.Write(j)
 		return nil
 	})
@@ -68,14 +68,14 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 	// Get {{.Model}}
 	App.Get("/{{.Paths}}/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
-		u, _ := {{.Model}}.Find(int64(id))
-		ujs := make(map[string]interface{})
-		if u != nil {
-			ujs["id"] = u.ID
-			ujs["name"] = u.Name
-			ujs["created_at"] = u.CreatedAt
+		v, _ := {{.Model}}.Find(int64(id))
+		u := make(map[string]interface{})
+		if v != nil {
+			{{- range $i, $k := .Keys }}
+			u["{{$k}}"] = v.{{index $.Attrs $i}}
+			{{- end }}
 		}
-		j, _ := ResponseJSON(ujs)
+		j, _ := ResponseJSON(u)
 		c.Write(j)
 		return nil
 	})

@@ -38,14 +38,14 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 	// Create New Event
 	App.Post("/events", func(c *r.Context) error {
 		props := c.Params
-		u, _ := Event.Create(props)
-		ujs := make(map[string]interface{})
-		if u != nil {
-			ujs["id"] = u.ID
-			ujs["name"] = u.Name
-			ujs["created_at"] = u.CreatedAt
+		v, _ := Event.Create(props)
+		u := make(map[string]interface{})
+		if v != nil {
+			u["id"] = v.ID
+			u["name"] = v.Name
+			u["created_at"] = v.CreatedAt
 		}
-		j, _ := ResponseJSON(ujs)
+		j, _ := ResponseJSON(u)
 		c.Write(j)
 		return nil
 	})
@@ -53,14 +53,14 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 	// Get Event
 	App.Get("/events/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
-		u, _ := Event.Find(int64(id))
-		ujs := make(map[string]interface{})
-		if u != nil {
-			ujs["id"] = u.ID
-			ujs["name"] = u.Name
-			ujs["created_at"] = u.CreatedAt
+		v, _ := Event.Find(int64(id))
+		u := make(map[string]interface{})
+		if v != nil {
+			u["id"] = v.ID
+			u["name"] = v.Name
+			u["created_at"] = v.CreatedAt
 		}
-		j, _ := ResponseJSON(ujs)
+		j, _ := ResponseJSON(u)
 		c.Write(j)
 		return nil
 	})
