@@ -74,15 +74,6 @@ func (c *Context) Next() error {
 	return nil
 }
 
-func (c *Context) JSON(r interface{}) error {
-	j, err := json.Marshal(r)
-	if err != nil {
-		return err
-	}
-	c.Write(j)
-	return nil
-}
-
 // Abort skips the rest of the handlers associated with the current route.
 // Abort is normally used when a handler handles the request normally and wants to skip the rest of the handlers.
 // If a handler wants to indicate an error condition, it should simply return the error without calling Abort.
