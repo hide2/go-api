@@ -108,7 +108,7 @@ func main() {
 
 ```
 Before/After Filter in Controller, return error in Before Handler to Abort normal handlers(e.g., Auth)
-```
+``` go
 func (c *UserControllerStruct) Register(App *r.Router) {
 
 	// BeforeFilter
