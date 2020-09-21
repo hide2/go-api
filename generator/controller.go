@@ -36,44 +36,24 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 		if c.Params["size"] != nil {
 			size, _ = strconv.Atoi(c.Params["size"].(string))
 		}
-		us, _ := {{.Model}}.Page(page, size).All()
-		ujs := make([]map[string]interface{}, 0)
-		for _, v := range us {
-			u := make(map[string]interface{})
-			{{- range $i, $k := .Keys }}
-			u["{{$k}}"] = v.{{index $.Attrs $i}}
-			{{- end }}
-			ujs = append(ujs, u)
-		}
-		c.ResponseJSON(ujs)
+		ms, _ := {{.Model}}.Page(page, size).All()
+		c.ResponseJSON(ms)
 		return nil
 	})
 
 	// Create New {{.Model}}
 	App.Post("/{{.Paths}}", func(c *r.Context) error {
 		props := c.Params
-		v, _ := {{.Model}}.Create(props)
-		u := make(map[string]interface{})
-		if v != nil {
-			{{- range $i, $k := .Keys }}
-			u["{{$k}}"] = v.{{index $.Attrs $i}}
-			{{- end }}
-		}
-		c.ResponseJSON(u)
+		m, _ := {{.Model}}.Create(props)
+		c.ResponseJSON(m)
 		return nil
 	})
 
 	// Get {{.Model}}
 	App.Get("/{{.Paths}}/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
-		v, _ := {{.Model}}.Find(int64(id))
-		u := make(map[string]interface{})
-		if v != nil {
-			{{- range $i, $k := .Keys }}
-			u["{{$k}}"] = v.{{index $.Attrs $i}}
-			{{- end }}
-		}
-		c.ResponseJSON(u)
+		m, _ := {{.Model}}.Find(int64(id))
+		c.ResponseJSON(m)
 		return nil
 	})
 
@@ -83,14 +63,8 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 		props := c.Params
 		conds := map[string]interface{}{"id": int64(id)}
 		{{.Model}}.Update(props, conds)
-		v, _ := {{.Model}}.Find(int64(id))
-		u := make(map[string]interface{})
-		if v != nil {
-			{{- range $i, $k := .Keys }}
-			u["{{$k}}"] = v.{{index $.Attrs $i}}
-			{{- end }}
-		}
-		c.ResponseJSON(u)
+		m, _ := {{.Model}}.Find(int64(id))
+		c.ResponseJSON(m)
 		return nil
 	})
 
@@ -98,8 +72,8 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 	App.Delete("/{{.Paths}}/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
 		{{.Model}}.Destroy(int64(id))
-		u := make(map[string]interface{})
-		c.ResponseJSON(u)
+		m := make(map[string]interface{})
+		c.ResponseJSON(m)
 		return nil
 	})
 

@@ -21,44 +21,24 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 		if c.Params["size"] != nil {
 			size, _ = strconv.Atoi(c.Params["size"].(string))
 		}
-		us, _ := User.Page(page, size).All()
-		ujs := make([]map[string]interface{}, 0)
-		for _, v := range us {
-			u := make(map[string]interface{})
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-			ujs = append(ujs, u)
-		}
-		c.ResponseJSON(ujs)
+		ms, _ := User.Page(page, size).All()
+		c.ResponseJSON(ms)
 		return nil
 	})
 
 	// Create New User
 	App.Post("/users", func(c *r.Context) error {
 		props := c.Params
-		v, _ := User.Create(props)
-		u := make(map[string]interface{})
-		if v != nil {
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-		}
-		c.ResponseJSON(u)
+		m, _ := User.Create(props)
+		c.ResponseJSON(m)
 		return nil
 	})
 
 	// Get User
 	App.Get("/users/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
-		v, _ := User.Find(int64(id))
-		u := make(map[string]interface{})
-		if v != nil {
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-		}
-		c.ResponseJSON(u)
+		m, _ := User.Find(int64(id))
+		c.ResponseJSON(m)
 		return nil
 	})
 
@@ -68,14 +48,8 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 		props := c.Params
 		conds := map[string]interface{}{"id": int64(id)}
 		User.Update(props, conds)
-		v, _ := User.Find(int64(id))
-		u := make(map[string]interface{})
-		if v != nil {
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-		}
-		c.ResponseJSON(u)
+		m, _ := User.Find(int64(id))
+		c.ResponseJSON(m)
 		return nil
 	})
 
@@ -83,8 +57,8 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 	App.Delete("/users/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
 		User.Destroy(int64(id))
-		u := make(map[string]interface{})
-		c.ResponseJSON(u)
+		m := make(map[string]interface{})
+		c.ResponseJSON(m)
 		return nil
 	})
 

@@ -21,44 +21,24 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 		if c.Params["size"] != nil {
 			size, _ = strconv.Atoi(c.Params["size"].(string))
 		}
-		us, _ := Event.Page(page, size).All()
-		ujs := make([]map[string]interface{}, 0)
-		for _, v := range us {
-			u := make(map[string]interface{})
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-			ujs = append(ujs, u)
-		}
-		c.ResponseJSON(ujs)
+		ms, _ := Event.Page(page, size).All()
+		c.ResponseJSON(ms)
 		return nil
 	})
 
 	// Create New Event
 	App.Post("/events", func(c *r.Context) error {
 		props := c.Params
-		v, _ := Event.Create(props)
-		u := make(map[string]interface{})
-		if v != nil {
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-		}
-		c.ResponseJSON(u)
+		m, _ := Event.Create(props)
+		c.ResponseJSON(m)
 		return nil
 	})
 
 	// Get Event
 	App.Get("/events/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
-		v, _ := Event.Find(int64(id))
-		u := make(map[string]interface{})
-		if v != nil {
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-		}
-		c.ResponseJSON(u)
+		m, _ := Event.Find(int64(id))
+		c.ResponseJSON(m)
 		return nil
 	})
 
@@ -68,14 +48,8 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 		props := c.Params
 		conds := map[string]interface{}{"id": int64(id)}
 		Event.Update(props, conds)
-		v, _ := Event.Find(int64(id))
-		u := make(map[string]interface{})
-		if v != nil {
-			u["id"] = v.ID
-			u["name"] = v.Name
-			u["created_at"] = v.CreatedAt
-		}
-		c.ResponseJSON(u)
+		m, _ := Event.Find(int64(id))
+		c.ResponseJSON(m)
 		return nil
 	})
 
@@ -83,8 +57,8 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 	App.Delete("/events/<id>", func(c *r.Context) error {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
 		Event.Destroy(int64(id))
-		u := make(map[string]interface{})
-		c.ResponseJSON(u)
+		m := make(map[string]interface{})
+		c.ResponseJSON(m)
 		return nil
 	})
 
