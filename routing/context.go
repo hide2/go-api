@@ -20,14 +20,16 @@ type Context struct {
 
 	Serialize SerializeFunc // the function serializing the given data of arbitrary type into a byte array.
 
-	router      *Router
-	pnames      []string               // list of route parameter names
-	pvalues     []string               // list of parameter values corresponding to pnames
-	data        map[string]interface{} // data items managed by Get and Set
-	NamedParams map[string]interface{} // GET query args & POST body params
-	Params      map[string]interface{} // GET query args & POST body params
-	index       int                    // the index of the currently executing handler in handlers
-	handlers    []Handler              // the handlers associated with the current route
+	router         *Router
+	pnames         []string               // list of route parameter names
+	pvalues        []string               // list of parameter values corresponding to pnames
+	data           map[string]interface{} // data items managed by Get and Set
+	NamedParams    map[string]interface{} // Named params
+	Params         map[string]interface{} // GET query args & POST body params
+	index          int                    // the index of the currently executing handler in handlers
+	handlers       []Handler              // the handlers associated with the current route
+	beforeHandlers map[string]Handler     // Before Filter Handlers
+	afterHandlers  map[string]Handler     // After Filter Handlers
 }
 
 // Router returns the Router that is handling the incoming HTTP request.
@@ -58,6 +60,25 @@ func (c *Context) Set(name string, value interface{}) {
 		c.data = make(map[string]interface{})
 	}
 	c.data[name] = value
+}
+
+// Before Filter
+func (c *Context) BeforeFilter() error {
+	if h := c.beforeHandlers[string(c.Path())]; h != nil {
+		err := h(c)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Before Filter
+func (c *Context) AfterFilter() error {
+	if h := c.afterHandlers[string(c.Path())]; h != nil {
+		h(c)
+	}
+	return nil
 }
 
 // Next calls the rest of the handlers associated with the current route.
@@ -140,4 +161,30 @@ func Serialize(data interface{}) (bytes []byte, err error) {
 		}
 	}
 	return nil, nil
+}
+
+func (c *Context) ResponseJSON(data interface{}) error {
+	js := make(map[string]interface{}, 0)
+	js["code"] = 200
+	js["message"] = "OK"
+	js["data"] = data
+	j, err := json.Marshal(js)
+	if err != nil {
+		js["code"] = 500
+		js["message"] = err.Error()
+		js["data"] = ""
+		j, _ = json.Marshal(js)
+	}
+	c.Write(j)
+	return nil
+}
+
+func (c *Context) ResponseErrJSON(msg string) error {
+	js := make(map[string]interface{}, 0)
+	js["code"] = 500
+	js["message"] = msg
+	js["data"] = ""
+	j, _ := json.Marshal(js)
+	c.Write(j)
+	return nil
 }

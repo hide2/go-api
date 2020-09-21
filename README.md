@@ -4,7 +4,7 @@ Go-API is a micro API service framework, auto-generate RESTful API based on mode
 - Restful JSON API generator
 - Auto support for application/x-www-form-urlencoded & application/json
 - NamedParams & Params(Query Args/POST Body)
-- Routing & Filter & Auth
+- Routing & Before/After Filter
 - Access Log
 - MySQL based ORM Model & CRUD methods generator
 - Auto create table
@@ -106,6 +106,25 @@ func main() {
 	panic(fasthttp.ListenAndServe(":8080", App.HandleRequest))
 }
 
+```
+Before/After Filter in Controller, return error in Before Handler to Abort normal handlers(e.g., Auth)
+```
+func (c *UserControllerStruct) Register(App *r.Router) {
+
+	// BeforeFilter
+	App.Before("/users", func(c *r.Context) error {
+		fmt.Println("BeforeFilter - users")
+		e := "No Permission."
+		c.ResponseErrJSON(e)
+		return errors.New(e)
+	})
+
+	// AfterFilter
+	App.After("/users", func(c *r.Context) error {
+		fmt.Println("AfterFilter - users")
+		return nil
+	})
+...
 ```
 Test your API
 ``` bash

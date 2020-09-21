@@ -29,6 +29,8 @@ type (
 		maxParams        int
 		notFound         []Handler
 		notFoundHandlers []Handler
+		beforeHandlers   map[string]Handler
+		afterHandlers    map[string]Handler
 	}
 
 	// routeStore stores route paths and the corresponding handlers.
@@ -55,8 +57,10 @@ var Methods = []string{
 // New creates a new Router object.
 func New() *Router {
 	r := &Router{
-		routes: make(map[string]*Route),
-		stores: make(map[string]routeStore),
+		routes:         make(map[string]*Route),
+		stores:         make(map[string]routeStore),
+		beforeHandlers: make(map[string]Handler),
+		afterHandlers:  make(map[string]Handler),
 	}
 	r.RouteGroup = *newRouteGroup("", r, make([]Handler, 0))
 	r.NotFound(MethodNotAllowedHandler, NotFoundHandler)
@@ -90,9 +94,18 @@ func (r *Router) HandleRequest(ctx *fasthttp.RequestCtx) {
 	for i, n := range c.pnames {
 		c.NamedParams[n] = c.pvalues[i]
 	}
+	// Before Filter
+	c.beforeHandlers = r.beforeHandlers
+	berr := c.BeforeFilter()
+	if berr != nil {
+		c.Abort()
+	}
 	if err := c.Next(); err != nil {
 		r.handleError(c, err)
 	}
+	// After Filter
+	c.afterHandlers = r.afterHandlers
+	c.AfterFilter()
 	r.pool.Put(c)
 }
 

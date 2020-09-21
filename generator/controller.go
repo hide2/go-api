@@ -45,8 +45,7 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 			{{- end }}
 			ujs = append(ujs, u)
 		}
-		j, _ := ResponseJSON(ujs)
-		c.Write(j)
+		c.ResponseJSON(ujs)
 		return nil
 	})
 
@@ -60,8 +59,7 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 			u["{{$k}}"] = v.{{index $.Attrs $i}}
 			{{- end }}
 		}
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 
@@ -75,8 +73,7 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 			u["{{$k}}"] = v.{{index $.Attrs $i}}
 			{{- end }}
 		}
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 
@@ -93,8 +90,7 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 			u["{{$k}}"] = v.{{index $.Attrs $i}}
 			{{- end }}
 		}
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 
@@ -103,8 +99,7 @@ func (c *{{.Model}}ControllerStruct) Register(App *r.Router) {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
 		{{.Model}}.Destroy(int64(id))
 		u := make(map[string]interface{})
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 

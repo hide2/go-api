@@ -30,8 +30,7 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 			u["created_at"] = v.CreatedAt
 			ujs = append(ujs, u)
 		}
-		j, _ := ResponseJSON(ujs)
-		c.Write(j)
+		c.ResponseJSON(ujs)
 		return nil
 	})
 
@@ -45,8 +44,7 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 			u["name"] = v.Name
 			u["created_at"] = v.CreatedAt
 		}
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 
@@ -60,8 +58,7 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 			u["name"] = v.Name
 			u["created_at"] = v.CreatedAt
 		}
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 
@@ -78,8 +75,7 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 			u["name"] = v.Name
 			u["created_at"] = v.CreatedAt
 		}
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 
@@ -88,8 +84,7 @@ func (c *EventControllerStruct) Register(App *r.Router) {
 		id, _ := strconv.Atoi(c.NamedParams["id"].(string))
 		Event.Destroy(int64(id))
 		u := make(map[string]interface{})
-		j, _ := ResponseJSON(u)
-		c.Write(j)
+		c.ResponseJSON(u)
 		return nil
 	})
 

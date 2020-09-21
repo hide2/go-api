@@ -46,6 +46,18 @@ func (r *Route) Name(name string) *Route {
 	return r
 }
 
+// Before Filter
+func (r *Route) Before(handler Handler) *Route {
+	r.group.router.beforeHandlers[r.path] = handler
+	return r
+}
+
+// After Filter
+func (r *Route) After(handler Handler) *Route {
+	r.group.router.afterHandlers[r.path] = handler
+	return r
+}
+
 // Get adds the route to the router using the GET HTTP method.
 func (r *Route) Get(handlers ...Handler) *Route {
 	return r.add("GET", handlers)

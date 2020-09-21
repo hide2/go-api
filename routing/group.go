@@ -24,6 +24,16 @@ func newRouteGroup(prefix string, router *Router, handlers []Handler) *RouteGrou
 	}
 }
 
+// Before Filter
+func (r *RouteGroup) Before(path string, handler Handler) *Route {
+	return newRoute(path, r).Before(handler)
+}
+
+// After Filter
+func (r *RouteGroup) After(path string, handler Handler) *Route {
+	return newRoute(path, r).After(handler)
+}
+
 // Get adds a GET route to the router with the given route path and handlers.
 func (r *RouteGroup) Get(path string, handlers ...Handler) *Route {
 	return newRoute(path, r).Get(handlers...)
