@@ -124,6 +124,20 @@ func (c *UserControllerStruct) Register(App *r.Router) {
 		fmt.Println("AfterFilter - users")
 		return nil
 	})
+
+	// List Users
+	App.Get("/users", func(c *r.Context) error {
+		page, size := 1, 20
+		if c.Params["page"] != nil {
+			page, _ = strconv.Atoi(c.Params["page"].(string))
+		}
+		if c.Params["size"] != nil {
+			size, _ = strconv.Atoi(c.Params["size"].(string))
+		}
+		ms, _ := User.Page(page, size).All()
+		c.ResponseJSON(ms)
+		return nil
+	})
 ...
 ```
 Test your API
